@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>足彩详情页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            width: 24px;
+            height: 24px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>') no-repeat center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .share-btn {
+            width: 24px;
+            height: 24px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>') no-repeat center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            padding: 20px;
+        }
+
+        /* 专家预测卡片 */
+        .expert-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .expert-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .expert-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .expert-info {
+            flex: 1;
+        }
+
+        .expert-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .expert-badge {
+            display: inline-block;
+            background: #ffd700;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .expert-stats {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* 比赛信息卡片 */
+        .match-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .league-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .league-tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .match-time {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0 20px;
+        }
+
+        .teams-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .team {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .team-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .vs-divider {
+            font-size: 20px;
+            font-weight: bold;
+            color: #999;
+            padding: 0 20px;
+        }
+
+        /* 投注选项 */
+        .betting-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .bet-option {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .bet-option.recommended {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .bet-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .bet-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .bet-option.recommended .bet-label {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .bet-odds {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .bet-option.recommended .bet-odds {
+            color: white;
+        }
+
+        /* 分析内容 */
+        .analysis-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .analysis-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #666;
+        }
+
+        .highlight-text {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        /* 统计数据 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* 历史交锋 */
+        .history-list {
+            margin-top: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-date {
+            font-size: 12px;
+            color: #999;
+            width: 80px;
+        }
+
+        .history-teams {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            padding: 0 15px;
+        }
+
+        .history-score {
+            font-size: 16px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* 底部操作栏 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-follow {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-bet {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 浮动提示 */
+        .floating-tip {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 375px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .team-logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .bet-odds {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <button class="back-btn"></button>
+        <div class="header-title">赛事详情</div>
+        <button class="share-btn"></button>
+    </div>
+
+    <!-- 浮动提示 -->
+    <div class="floating-tip">
+        🔥 热门赛事
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 专家预测卡片 -->
+        <div class="expert-card">
+            <div class="expert-header">
+                <div class="expert-avatar">安</div>
+                <div class="expert-info">
+                    <div>
+                        <span class="expert-name">安特约返会</span>
+                        <span class="expert-badge">金牌专家</span>
+                    </div>
+                    <div class="expert-stats">近10中8 · 胜率80% · 连红5场</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 比赛信息卡片 -->
+        <div class="match-card">
+            <div class="league-info">
+                <span class="league-tag">日职联</span>
+            </div>
+            <div class="match-time">08月03日 周六 17:00</div>
+            
+            <div class="teams-container">
+                <div class="team">
+                    <div class="team-logo">🔴</div>
+                    <div class="team-name">武JFC虎队</div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="team">
+                    <div class="team-logo">🟣</div>
+                    <div class="team-name">京都不死鸟</div>
+                </div>
+            </div>
+
+            <!-- 投注选项 -->
+            <div class="betting-options">
+                <div class="bet-option">
+                    <div class="bet-label">主胜</div>
+                    <div class="bet-odds">2.28</div>
+                </div>
+                <div class="bet-option recommended">
+                    <div class="bet-label">平局</div>
+                    <div class="bet-odds">3.60</div>
+                </div>
+                <div class="bet-option">
+                    <div class="bet-label">客胜</div>
+                    <div class="bet-odds">2.52</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 比赛分析 -->
+        <div class="analysis-section">
+            <div class="section-title">比赛分析</div>
+            <div class="analysis-content">
+                日职业东京FC对该京都不死鸟的比赛分析：
+                <br><br>
+                东京FC：上一场日职联客场2-2战平湘南海洋，连续洲场比赛未能取胜。状态出现严重下滑趋势，尤其在客场表现欠佳。<span class="highlight-text">球队攻击线效率偏低，场均进球仅1.2个</span>，防守端也存在漏洞。
+                <br><br>
+                京都不死鸟：近期状态回升，上轮联赛主场1-0击败东京绿茵，连续3场不败。<span class="highlight-text">客场能力有所提升，近5个客场3胜1平1负</span>，只要制定合理的战术策略，有望在客场全身而退。
+            </div>
+        </div>
+
+        <!-- 数据统计 -->
+        <div class="analysis-section">
+            <div class="section-title">关键数据</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">主队近期胜率</div>
+                    <div class="stat-value">40%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">客队近期胜率</div>
+                    <div class="stat-value">60%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">历史交锋主胜</div>
+                    <div class="stat-value">5次</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">历史交锋客胜</div>
+                    <div class="stat-value">3次</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史交锋 -->
+        <div class="analysis-section">
+            <div class="section-title">历史交锋</div>
+            <div class="history-list">
+                <div class="history-item">
+                    <div class="history-date">2024-05-15</div>
+                    <div class="history-teams">武JFC虎队 vs 京都不死鸟</div>
+                    <div class="history-score">2-1</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-date">2024-02-20</div>
+                    <div class="history-teams">京都不死鸟 vs 武JFC虎队</div>
+                    <div class="history-score">1-1</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-date">2023-11-08</div>
+                    <div class="history-teams">武JFC虎队 vs 京都不死鸟</div>
+                    <div class="history-score">0-2</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐理由 -->
+        <div class="analysis-section">
+            <div class="section-title">推荐理由</div>
+            <div class="analysis-content">
+                综合两队近期状态、历史交锋记录以及主客场表现，本场比赛存在较大变数。武JFC虎队主场优势明显，但近期状态不佳；京都不死鸟客场能力提升，攻防较为均衡。
+                <br><br>
+                <span class="highlight-text">考虑到两队实力接近，平局赔率3.60具有较高价值</span>，建议本场比赛投注平局，同时可考虑小球盘口。
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="bottom-bar">
+        <button class="action-btn btn-follow">关注专家</button>
+        <button class="action-btn btn-bet">立即投注</button>
+    </div>
+
+    <script>
+        // 添加交互效果
+        document.querySelectorAll('.bet-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.bet-option').forEach(opt => {
+                    opt.classList.remove('recommended');
+                });
+                this.classList.add('recommended');
+            });
+        });
+
+        // 返回按钮
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            window.history.back();
+        });
+
+        // 分享按钮
+        document.querySelector('.share-btn').addEventListener('click', function() {
+            alert('分享功能待实现');
+        });
+
+        // 关注按钮
+        document.querySelector('.btn-follow').addEventListener('click', function() {
+            this.textContent = this.textContent === '关注专家' ? '已关注' : '关注专家';
+            this.style.background = this.textContent === '已关注' ? '#667eea' : '#f0f0f0';
+            this.style.color = this.textContent === '已关注' ? 'white' : '#333';
+        });
+
+        // 投注按钮
+        document.querySelector('.btn-bet').addEventListener('click', function() {
+            alert('跳转到投注页面');
+        });
+    </script>
+</body>
+</html>

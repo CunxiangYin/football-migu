@@ -1,0 +1,7 @@
+'use client';
+
+import { ExpertPredictionsPage } from '@/components/predictions/ExpertPredictionsPage';
+
+export default function HomePage() {
+  return <ExpertPredictionsPage />;
+}
