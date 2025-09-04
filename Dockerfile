@@ -18,10 +18,9 @@ RUN mkdir -p /app/backend/data
 # Set environment variables
 ENV PYTHONPATH=/app/backend
 ENV HOST=0.0.0.0
-ENV PORT=8000
 
-# Expose port (Railway will override this)
-EXPOSE 8000
+# Expose port (Railway will set PORT dynamically)
+EXPOSE ${PORT:-8000}
 
 # Start the application from the backend directory
 CMD ["python", "start_server.py"]
