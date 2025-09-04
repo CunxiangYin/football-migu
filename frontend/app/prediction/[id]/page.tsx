@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PredictionDetailPage } from '@/components/predictions/PredictionDetailPage';
+import { PredictionDetailPage } from '@/components/predictions/PredictionDetailPageNew';
 
 interface PageProps {
   params: {

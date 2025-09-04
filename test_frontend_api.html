@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Football Prediction API</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .result { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background: #f5f5f5; }
+        .content { white-space: pre-wrap; word-wrap: break-word; }
+        .stats { color: #666; font-size: 14px; margin-top: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>测试足球预测API</h1>
+    
+    <button onclick="testAPI()">测试API (fixture ID: 1001)</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>加载中...</p>';
+            
+            try {
+                const response = await fetch('https://web-production-ccc8.up.railway.app/api/v1/real-matches/generate-prediction/1001', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Full response:', data);
+                
+                if (data.status === 'success' && data.data) {
+                    const content = data.data.content;
+                    const chineseChars = (content.match(/[\u4e00-\u9fff]/g) || []).length;
+                    
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <h2>API响应成功</h2>
+                            <div class="stats">
+                                <p><strong>预测ID:</strong> ${data.data.prediction_id}</p>
+                                <p><strong>标题:</strong> ${data.data.title}</p>
+                                <p><strong>专家:</strong> ${data.data.expert?.name || 'N/A'}</p>
+                                <p><strong>置信度:</strong> ${data.data.confidence}%</p>
+                                <p><strong>文章总长度:</strong> ${content.length} 字符</p>
+                                <p><strong>中文字数:</strong> ${chineseChars} 字</p>
+                            </div>
+                            <h3>文章内容:</h3>
+                            <div class="content">${content}</div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="result">错误: ${JSON.stringify(data)}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result">错误: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
