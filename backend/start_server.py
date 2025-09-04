@@ -7,6 +7,12 @@ import os
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Ensure all dependencies are installed
+try:
+    import install_deps
+except:
+    pass
+
 if __name__ == "__main__":
     import uvicorn
     from app.core.config import settings
