@@ -32,7 +32,7 @@ interface PredictionDetailPageProps {
   predictionId: string;
 }
 
-// Mock data for demonstration
+// Fallback data for demonstration
 const mockPredictionDetail = {
   id: 'prediction-1',
   expert: {
@@ -112,13 +112,22 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
     const fetchPredictionDetail = async () => {
       try {
         setIsLoading(true);
-        // Fetch prediction from API
-        const response = await fetch(`/api/v1/real-matches/generate-prediction/${predictionId}`, {
+        
+        // Use direct API URL in production
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-ccc8.up.railway.app/api/v1';
+        const url = `${apiUrl}/real-matches/generate-prediction/${predictionId}`;
+        
+        console.log('Fetching from:', url);
+        
+        const response = await fetch(url, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
         
         if (!response.ok) {
-          throw new Error('Failed to fetch prediction');
+          throw new Error(`Failed to fetch prediction: ${response.status}`);
         }
         
         const result = await response.json();
@@ -178,16 +187,16 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
           
           setPrediction(transformedData);
           setIsFollowing(false);
+          console.log('Successfully loaded prediction with content length:', transformedData.content?.length);
         } else {
-          // Fallback to mock data if API fails
-          setPrediction(mockPredictionDetail);
-          setIsFollowing(mockPredictionDetail.isFollowing);
+          // API failed, show error message
+          console.error('API returned unsuccessful status');
+          setPrediction(null);
         }
       } catch (error) {
         console.error('Error fetching prediction:', error);
-        // Fallback to mock data
-        setPrediction(mockPredictionDetail);
-        setIsFollowing(mockPredictionDetail.isFollowing);
+        // Show error instead of mock data
+        setPrediction(null);
       } finally {
         setIsLoading(false);
       }
@@ -232,6 +241,13 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
         <div className="text-center">
           <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600">无法加载预测内容</p>
+          <p className="text-sm text-gray-500 mt-2">请检查网络连接并重试</p>
+          <Button 
+            className="mt-4" 
+            onClick={() => window.location.reload()}
+          >
+            重新加载
+          </Button>
         </div>
       </div>
     );
@@ -410,12 +426,13 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
               详细分析
             </h3>
             <div className="prose prose-sm max-w-none">
-              <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed break-words">
+              <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed break-words overflow-hidden">
                 {prediction.content}
               </div>
-              {/* Display content length for debugging */}
+              {/* Display content stats */}
               <div className="mt-4 text-xs text-gray-400 border-t pt-2">
-                文章长度: {prediction.content?.length || 0} 字符
+                <div>文章长度: {prediction.content?.length || 0} 字符</div>
+                <div>中文字数: {(prediction.content?.match(/[\u4e00-\u9fff]/g) || []).length} 字</div>
               </div>
             </div>
           </Card>
