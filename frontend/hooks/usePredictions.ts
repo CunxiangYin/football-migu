@@ -44,12 +44,27 @@ export function usePredictions({
     setError(null);
     
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Load experts from API
+      const expertsResponse = await fetch('/api/v1/experts').then(res => res.json());
       
-      // Load experts
-      const mockExperts = generateMockExperts();
-      setExperts(mockExperts);
+      // Use API data if available, otherwise use mock
+      if (expertsResponse.status === 'success' && expertsResponse.data) {
+        // Transform API data to match frontend format
+        const apiExperts = expertsResponse.data.map((expert: any) => ({
+          id: expert.id,
+          name: expert.name,
+          avatar: expert.avatar_url,
+          winStreak: expert.successful_predictions || Math.floor(Math.random() * 15) + 1,
+          winRate: expert.win_rate || 75,
+          followers: expert.followers_count || 1000,
+          isFollowing: false,
+        }));
+        setExperts(apiExperts);
+      } else {
+        // Fallback to mock data
+        const mockExperts = generateMockExperts();
+        setExperts(mockExperts);
+      }
       
       // Load predictions
       const mockPredictions = generateMockPredictions(pageSize, 1, {
