@@ -11,6 +11,7 @@ import logging
 from app.core.database import get_db
 from services.football_api_client import FootballAPIClient
 from agents.football_prediction_writer import FootballPredictionWriter
+from agents.enhanced_football_writer import EnhancedFootballWriter
 from agents.prediction_experts import PredictionExpertProfiles
 from app.domain.models import Expert, Prediction
 import uuid
@@ -31,10 +32,15 @@ def get_football_client():
 def get_prediction_writer():
     """Get prediction writer instance"""
     try:
-        return FootballPredictionWriter()
+        # Use enhanced writer for longer articles (1000-1500 words)
+        return EnhancedFootballWriter()
     except Exception as e:
-        logger.error(f"Failed to initialize FootballPredictionWriter: {e}")
-        return None
+        logger.error(f"Failed to initialize EnhancedFootballWriter: {e}")
+        # Fallback to basic writer
+        try:
+            return FootballPredictionWriter()
+        except:
+            return None
 
 @router.get("/today-tomorrow")
 async def get_today_tomorrow_matches():
@@ -150,42 +156,66 @@ async def generate_match_prediction(
     try:
         if writer and client:
             # For demo, use mock data but real AI generation
-            from agents.football_prediction_writer import TeamInfo, MatchInfo, OddsInfo, HistoricalData
+            from agents.enhanced_football_writer import TeamInfo, MatchInfo, OddsInfo, HistoricalData
             
             # Create mock match info (in production, fetch from API)
+            home_team = TeamInfo(
+                name="主队",
+                recent_form=['W', 'W', 'D', 'L', 'W'],
+                league_position=3,
+                home_away_record='主场8胜3平2负',
+                key_players_status={},
+                recent_performance='近5场3胜1平1负，进11球失5球，状态出色',
+                goals_scored=11,
+                goals_conceded=5,
+                top_scorer='前锋王',
+                formation='4-3-3'
+            )
+            
+            away_team = TeamInfo(
+                name="客队",
+                recent_form=['L', 'D', 'W', 'W', 'L'],
+                league_position=5,
+                home_away_record='客场3胜3平6负',
+                key_players_status={'核心球员': '伤缺'},
+                recent_performance='近5场2胜1平2负，进7球失9球，防守问题明显',
+                goals_scored=7,
+                goals_conceded=9,
+                top_scorer='中场李',
+                formation='4-5-1'
+            )
+            
             match_info = MatchInfo(
-                home_team=TeamInfo(name="主队", league_position=3, recent_form="WWDLW"),
-                away_team=TeamInfo(name="客队", league_position=5, recent_form="LDWWL"),
+                home_team=home_team,
+                away_team=away_team,
+                league="联赛",
                 match_time="2024-12-01 15:00:00",
                 venue="主场体育场",
                 weather="晴朗",
-                league_name="联赛"
+                referee="主裁判",
+                importance="常规赛"
             )
             
             odds_info = OddsInfo(
                 home_win=2.10,
                 draw=3.20,
                 away_win=3.50,
-                asian_handicap="-0.5",
-                over_under="2.5"
+                asian_handicap="主队-0.5",
+                over_under="2.5球",
+                odds_trend="主队赔率略有下降"
             )
             
             historical_data = HistoricalData(
-                h2h_last_5=[
-                    {"home_goals": 2, "away_goals": 1, "date": "2024-01-01"},
-                    {"home_goals": 1, "away_goals": 1, "date": "2023-10-01"},
-                    {"home_goals": 0, "away_goals": 2, "date": "2023-05-01"},
+                h2h_results=[
+                    {'winner': 'home', 'score': '2-1'},
+                    {'winner': 'draw', 'score': '1-1'},
+                    {'winner': 'home', 'score': '3-0'},
+                    {'winner': 'away', 'score': '0-1'},
+                    {'winner': 'home', 'score': '2-0'}
                 ],
-                home_recent_5=[
-                    {"goals_for": 2, "goals_against": 1, "result": "W"},
-                    {"goals_for": 3, "goals_against": 0, "result": "W"},
-                    {"goals_for": 1, "goals_against": 1, "result": "D"},
-                ],
-                away_recent_5=[
-                    {"goals_for": 1, "goals_against": 2, "result": "L"},
-                    {"goals_for": 1, "goals_against": 1, "result": "D"},
-                    {"goals_for": 2, "goals_against": 0, "result": "W"},
-                ]
+                home_team_home_record='主队主场对阵客队4胜1平1负，场均进2.3球失0.8球',
+                away_team_away_record='客队客场对阵主队1胜1平4负，场均进0.7球失2.0球',
+                last_meeting_details='上次交锋在2个月前，主队2-1击败客队'
             )
             
             # Generate AI prediction
