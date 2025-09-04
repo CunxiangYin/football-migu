@@ -74,21 +74,11 @@ if backend_cors:
     try:
         cors_origins = json.loads(backend_cors)
     except:
-        # Fallback with Vercel URL
-        cors_origins = [
-            "http://localhost:3000", 
-            "http://localhost:3001",
-            "https://frontend-pgpuj3b3f-jasonyins-projects.vercel.app",
-            "https://football-migu.vercel.app"
-        ]
+        # Fallback - allow all origins
+        cors_origins = ["*"]
 else:
-    # Default CORS origins including Vercel frontend
-    cors_origins = [
-        "http://localhost:3000", 
-        "http://localhost:3001",
-        "https://frontend-pgpuj3b3f-jasonyins-projects.vercel.app",
-        "https://football-migu.vercel.app"
-    ]
+    # Default - allow all origins for simplicity
+    cors_origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
