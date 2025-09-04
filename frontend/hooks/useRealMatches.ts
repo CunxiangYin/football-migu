@@ -54,23 +54,26 @@ export function useRealMatches(): UseRealMatchesReturn {
     setError(null);
     
     try {
-      // Fetch real matches using relative URL for Next.js proxy
+      // Use direct backend URL for API calls
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-ccc8.up.railway.app/api/v1';
+      
+      // Fetch real matches
       console.log('Fetching matches from API...');
-      const matchesResponse = await fetch('/api/v1/real-matches/today-tomorrow').then(res => res.json());
+      const matchesResponse = await fetch(`${apiUrl}/real-matches/today-tomorrow`).then(res => res.json());
       console.log('Matches response:', matchesResponse);
       if (matchesResponse.status === 'success') {
         setMatches(matchesResponse.data);
       }
       
       // Fetch predictions
-      const predictionsResponse = await fetch('/api/v1/real-matches/predictions').then(res => res.json());
+      const predictionsResponse = await fetch(`${apiUrl}/real-matches/predictions`).then(res => res.json());
       if (predictionsResponse.status === 'success') {
         setPredictions(predictionsResponse.data);
       }
       
       // Fetch experts
       console.log('Fetching experts from API...');
-      const expertsResponse = await fetch('/api/v1/real-matches/experts').then(res => res.json());
+      const expertsResponse = await fetch(`${apiUrl}/real-matches/experts`).then(res => res.json());
       console.log('Experts response:', expertsResponse);
       if (expertsResponse.status === 'success') {
         setExperts(expertsResponse.data);
@@ -146,7 +149,8 @@ export function useRealMatches(): UseRealMatchesReturn {
 
   const generatePrediction = async (fixtureId: number) => {
     try {
-      const response = await fetch(`/api/v1/real-matches/generate-prediction/${fixtureId}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-ccc8.up.railway.app/api/v1';
+      const response = await fetch(`${apiUrl}/real-matches/generate-prediction/${fixtureId}`, {
         method: 'POST'
       }).then(res => res.json());
       if (response.status === 'success') {
