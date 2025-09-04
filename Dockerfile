@@ -1,12 +1,14 @@
-# Use Python 3.11 slim image
+# Use Python 3.11 slim image - Updated to force rebuild
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
+# Copy requirements first (for better caching)
+COPY backend/requirements.txt ./backend/requirements.txt
+
 # Copy backend files
 COPY backend/ ./backend/
-COPY requirements.txt ./backend/
 
 # Install dependencies
 WORKDIR /app/backend
