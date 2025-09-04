@@ -20,9 +20,9 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     
     # Server
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
-    RELOAD: bool = True
+    HOST: str = os.getenv("HOST", "0.0.0.0")
+    PORT: int = int(os.getenv("PORT", "8000"))
+    RELOAD: bool = os.getenv("ENVIRONMENT", "development") == "development"
     
     # Database
     DATABASE_URL: str = f"sqlite:///{BASE_DIR}/football_betting.db"

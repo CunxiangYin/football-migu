@@ -201,7 +201,7 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
   };
 
   const handleLike = () => {
-    setPrediction(prev => ({
+    setPrediction((prev: any) => ({
       ...prev,
       isLiked: !prev.isLiked,
       likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
@@ -209,7 +209,7 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
   };
 
   const handleSave = () => {
-    setPrediction(prev => ({
+    setPrediction((prev: any) => ({
       ...prev,
       isSaved: !prev.isSaved,
     }));
@@ -277,7 +277,7 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-lg">{prediction.expert.name}</span>
-                    {prediction.expert.badges.map((badge, idx) => (
+                    {prediction.expert.badges.map((badge: any, idx: number) => (
                       <Badge
                         key={idx}
                         className={cn(
@@ -428,7 +428,7 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">{prediction.match.homeTeam.name}</span>
                   <div className="flex gap-1">
-                    {prediction.statistics.homeTeamForm.map((result, idx) => (
+                    {prediction.statistics.homeTeamForm.map((result: any, idx: number) => (
                       <Badge
                         key={idx}
                         variant={result === 'W' ? 'default' : result === 'D' ? 'secondary' : 'destructive'}
@@ -445,7 +445,7 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">{prediction.match.awayTeam.name}</span>
                   <div className="flex gap-1">
-                    {prediction.statistics.awayTeamForm.map((result, idx) => (
+                    {prediction.statistics.awayTeamForm.map((result: any, idx: number) => (
                       <Badge
                         key={idx}
                         variant={result === 'W' ? 'default' : result === 'D' ? 'secondary' : 'destructive'}
@@ -464,7 +464,7 @@ export function PredictionDetailPage({ predictionId }: PredictionDetailPageProps
           <Card className="p-4">
             <h3 className="font-semibold mb-3">历史交锋</h3>
             <div className="space-y-2">
-              {prediction.statistics.h2hLast5.map((match, idx) => (
+              {prediction.statistics.h2hLast5.map((match: any, idx: number) => (
                 <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                   <span className="text-xs text-gray-500">{match.date}</span>
                   <span className="text-sm font-medium">
