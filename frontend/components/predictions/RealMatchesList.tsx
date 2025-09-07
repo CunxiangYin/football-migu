@@ -159,7 +159,7 @@ export function RealMatchesList() {
               <Card
                 key={pred.id}
                 className="p-3 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => router.push(`/prediction/${pred.id}`)}
+                onClick={() => window.location.href = '/coming-soon?feature=最新预测'}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
