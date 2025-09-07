@@ -164,6 +164,7 @@ export function FootballBettingPage({ matchId }: FootballBettingPageProps) {
                 <Button
                   variant={betting_odds.recommended === 'home' ? 'default' : 'outline'}
                   className="flex flex-col h-auto py-3"
+                  onClick={() => window.location.href = '/coming-soon?feature=投注预测'}
                 >
                   <span className="text-xs opacity-80">主胜</span>
                   <span className="text-lg font-bold">{betting_odds.home_win.toFixed(2)}</span>
@@ -171,6 +172,7 @@ export function FootballBettingPage({ matchId }: FootballBettingPageProps) {
                 <Button
                   variant={betting_odds.recommended === 'draw' ? 'default' : 'outline'}
                   className="flex flex-col h-auto py-3"
+                  onClick={() => window.location.href = '/coming-soon?feature=投注预测'}
                 >
                   <span className="text-xs opacity-80">平局</span>
                   <span className="text-lg font-bold">{betting_odds.draw.toFixed(2)}</span>
@@ -178,6 +180,7 @@ export function FootballBettingPage({ matchId }: FootballBettingPageProps) {
                 <Button
                   variant={betting_odds.recommended === 'away' ? 'default' : 'outline'}
                   className="flex flex-col h-auto py-3"
+                  onClick={() => window.location.href = '/coming-soon?feature=投注预测'}
                 >
                   <span className="text-xs opacity-80">客胜</span>
                   <span className="text-lg font-bold">{betting_odds.away_win.toFixed(2)}</span>
