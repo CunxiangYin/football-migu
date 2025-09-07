@@ -12,17 +12,18 @@ logger = logging.getLogger(__name__)
 CLAUDE_MODELS = {
     # Claude 4 models (latest)
     "claude-4-opus": "claude-3-opus-20240229",  # Most capable model
-    "claude-4-sonnet": "claude-3-5-sonnet-20241022",  # Claude 3.5 Sonnet (latest)
-    "claude-4-haiku": "claude-3-haiku-20240307",  # Fast and cost-effective
+    "claude-4-sonnet": "claude-3-5-sonnet-20241022",  # Claude 3.5 Sonnet V2 (Latest Sonnet 4.0)
+    "claude-4-haiku": "claude-3-5-haiku-20241022",  # Claude 3.5 Haiku (Latest)
     
     # Legacy models
     "claude-3-opus": "claude-3-opus-20240229",
     "claude-3-sonnet": "claude-3-sonnet-20240229",
     "claude-3-haiku": "claude-3-haiku-20240307",
+    "claude-3-5-sonnet-v1": "claude-3-5-sonnet-20240620",  # Claude 3.5 Sonnet V1
 }
 
 # Default model to use
-DEFAULT_MODEL = CLAUDE_MODELS["claude-4-sonnet"]  # Use Claude 3.5 Sonnet as default
+DEFAULT_MODEL = CLAUDE_MODELS["claude-4-sonnet"]  # Use Sonnet 4.0 (Claude 3.5 Sonnet V2) as default
 
 class ClaudeClient:
     """Enhanced Claude API client with model management."""
@@ -102,7 +103,7 @@ class ClaudeClient:
         expert_style: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Generate match prediction using Claude 4.
+        Generate match prediction using Sonnet 4.0 (Claude 3.5 Sonnet V2).
         
         Args:
             match_data: Match information
