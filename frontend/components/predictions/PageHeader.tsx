@@ -47,15 +47,24 @@ export function PageHeader({ activeTab, onTabChange }: PageHeaderProps) {
       {/* Main header */}
       <div className="px-4 py-3">
         <div className="flex items-center justify-between mb-3">
-          <button className="p-1">
+          <button 
+            className="p-1"
+            onClick={() => window.location.href = '/coming-soon?feature=返回功能'}
+          >
             <ChevronLeft className="h-6 w-6" />
           </button>
           <h1 className="text-lg font-semibold">彩经中心-结果预测</h1>
           <div className="flex items-center gap-2">
-            <button className="p-1">
+            <button 
+              className="p-1"
+              onClick={() => window.location.href = '/coming-soon?feature=搜索功能'}
+            >
               <Search className="h-5 w-5" />
             </button>
-            <button className="p-1">
+            <button 
+              className="p-1"
+              onClick={() => window.location.href = '/coming-soon?feature=更多选项'}
+            >
               <MoreVertical className="h-5 w-5" />
             </button>
           </div>
@@ -66,7 +75,13 @@ export function PageHeader({ activeTab, onTabChange }: PageHeaderProps) {
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => onTabChange(tab.key)}
+              onClick={() => {
+                if (tab.key === 'football') {
+                  onTabChange(tab.key);
+                } else {
+                  window.location.href = `/coming-soon?feature=${encodeURIComponent(tab.label + '预测')}`;
+                }
+              }}
               className={cn(
                 "pb-2 px-1 relative whitespace-nowrap transition-colors",
                 activeTab === tab.key

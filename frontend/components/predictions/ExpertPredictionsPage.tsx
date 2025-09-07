@@ -75,18 +75,18 @@ export function ExpertPredictionsPage() {
   };
 
   const handleLike = async (predictionId: string) => {
-    // Implement like functionality
-    console.log('Like prediction:', predictionId);
+    // 跳转到功能未发布页面
+    window.location.href = '/coming-soon?feature=点赞功能';
   };
 
   const handleSave = async (predictionId: string) => {
-    // Implement save functionality
-    console.log('Save prediction:', predictionId);
+    // 跳转到功能未发布页面
+    window.location.href = '/coming-soon?feature=收藏功能';
   };
 
   const handleComment = async (predictionId: string) => {
-    // Implement comment functionality
-    console.log('Comment on prediction:', predictionId);
+    // 跳转到功能未发布页面
+    window.location.href = '/coming-soon?feature=评论功能';
   };
 
   return (

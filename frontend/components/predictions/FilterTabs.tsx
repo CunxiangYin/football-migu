@@ -22,7 +22,13 @@ export function FilterTabs({ activeFilter, onFilterChange }: FilterTabsProps) {
         {filters.map((filter) => (
           <button
             key={filter.key}
-            onClick={() => onFilterChange(filter.key)}
+            onClick={() => {
+              if (filter.key === 'hot') {
+                onFilterChange(filter.key);
+              } else {
+                window.location.href = `/coming-soon?feature=${encodeURIComponent(filter.label + '筛选')}`;
+              }
+            }}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium transition-all",
               activeFilter === filter.key
