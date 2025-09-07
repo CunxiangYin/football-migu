@@ -250,17 +250,15 @@ async def quick_prediction(request: QuickPredictionRequest):
 
 async def get_ai_predictions(match_data: Dict) -> Dict:
     """
-    获取AI模型预测（集成Claude API）
+    获取AI模型预测（集成Claude 4.0 API）
     """
     try:
-        import anthropic
+        # 导入Claude配置
+        from app.core.claude_config import get_claude_client
+        import json
         
-        # 获取API密钥
-        api_key = os.getenv('ANTHROPIC_API_KEY')
-        if not api_key:
-            return None
-            
-        client = anthropic.Anthropic(api_key=api_key)
+        # 获取Claude 4.0客户端
+        client = get_claude_client()
         
         # 构建提示
         prompt = f"""基于以下数据，预测比赛结果：
@@ -282,24 +280,27 @@ async def get_ai_predictions(match_data: Dict) -> Dict:
 
 请用JSON格式回复：{{"result": "主胜", "score": "2-1", "reason": "主场优势明显"}}"""
 
-        # 调用Claude API
-        response = client.messages.create(
-            model="claude-3-sonnet-20240229",
+        # 使用Claude 4.0 (3.5 Sonnet) 调用API
+        result = client.create_message(
+            prompt=prompt,
             max_tokens=200,
-            temperature=0.7,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            temperature=0.7
         )
         
-        # 解析响应
-        import json
-        ai_prediction = json.loads(response.content[0].text)
-        
-        return {
-            "Claude AI": f"{ai_prediction['result']}，预测比分{ai_prediction['score']}",
-            "AI分析": ai_prediction['reason']
-        }
+        if result["success"]:
+            # 解析响应
+            ai_prediction = json.loads(result["content"])
+            
+            return {
+                "Claude AI": f"{ai_prediction['result']}，预测比分{ai_prediction['score']}",
+                "AI分析": ai_prediction['reason'],
+                "模型版本": result["model"]
+            }
+        else:
+            print(f"Claude API调用失败: {result.get('error')}")
+            return {
+                "默认预测": "根据数据分析，主队略占优势"
+            }
         
     except Exception as e:
         print(f"AI预测失败: {e}")
