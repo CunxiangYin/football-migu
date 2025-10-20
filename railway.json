@@ -12,7 +12,7 @@
     "HOST": "0.0.0.0",
     "PORT": "${{PORT}}",
     "ENVIRONMENT": "production",
-    "DATABASE_URL": "sqlite:///data/football_betting.db",
-    "BACKEND_CORS_ORIGINS": "[\"https://frontend-pgpuj3b3f-jasonyins-projects.vercel.app\", \"http://localhost:3000\"]"
+    "DATABASE_URL": "sqlite:///app/data/football_betting.db",
+    "BACKEND_CORS_ORIGINS": "[\"https://frontend-4lirwktye-jasonyins-projects.vercel.app\", \"https://frontend-pgpuj3b3f-jasonyins-projects.vercel.app\", \"http://localhost:3000\"]"
   }
 }
