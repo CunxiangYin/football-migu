@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     RELOAD: bool = os.getenv("ENVIRONMENT", "development") == "development"
     
     # Database
-    DATABASE_URL: str = f"sqlite:///{BASE_DIR}/football_betting.db"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR}/football_betting.db")
     DATABASE_ECHO: bool = False
     
     # API Keys

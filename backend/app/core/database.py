@@ -38,4 +38,19 @@ def get_db() -> Generator[Session, None, None]:
 
 def init_db() -> None:
     """Initialize database tables."""
+    import os
+    from pathlib import Path
+    
+    # Ensure data directory exists for SQLite
+    db_url = settings.get_database_url()
+    if db_url.startswith("sqlite"):
+        # Extract path from SQLite URL
+        db_path = db_url.replace("sqlite:///", "")
+        if db_path and db_path != ":memory:":
+            # Create parent directory if it doesn't exist
+            db_dir = os.path.dirname(db_path)
+            if db_dir:
+                Path(db_dir).mkdir(parents=True, exist_ok=True)
+    
+    # Create all tables
     Base.metadata.create_all(bind=engine)
