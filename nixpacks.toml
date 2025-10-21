@@ -3,7 +3,7 @@
 nixPkgs = ["python311", "gcc"]
 
 [phases.install]
-cmds = ["pip install -r backend/requirements.txt"]
+cmds = ["pip install fastapi uvicorn sqlalchemy pydantic pydantic-settings python-dotenv"]
 
 [start]
-cmd = "cd backend && python -m uvicorn main:app --host 0.0.0.0 --port $PORT"
+cmd = "python main.py"
