@@ -2,8 +2,8 @@
 [phases.setup]
 nixPkgs = ["python311", "gcc"]
 
-[phases.install]
-cmds = ["pip install fastapi uvicorn sqlalchemy pydantic pydantic-settings python-dotenv"]
+[phases.install]  
+cmds = ["pip install -r requirements.txt"]
 
 [start]
 cmd = "python main.py"
