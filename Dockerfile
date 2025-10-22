@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy backend files
 COPY backend/ ./
+COPY app.py ./
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -26,4 +27,4 @@ ENV DEBUG=false
 EXPOSE 8000
 
 # Start the application directly
-CMD ["python", "main.py"]
+CMD ["python", "app.py"]
